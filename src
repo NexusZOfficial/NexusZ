@@ -1,0 +1,1699 @@
+    local Fluent =
+                    loadstring(
+                    game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua")
+                )()
+
+                local SaveManager =
+                    loadstring(
+                    game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua")
+                )()
+
+                local InterfaceManager =
+                    loadstring(
+                    game:HttpGet(
+                        "https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"
+                    )
+                )()
+
+                function Init()
+                    local Fluent =
+                        loadstring(
+                        game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua")
+                    )()
+                end
+
+                function Test()
+                    print(Fluent.Options)
+                end
+
+                Init()
+                Test()
+
+                local Window =
+                    Fluent:CreateWindow(
+                    {
+                        Title = "NexusZ | Feast",
+                        SubTitle = "0.0.1",
+                        TabWidth = 160,
+                        Size = UDim2.fromOffset(500, 350),
+                        Acrylic = true,
+                        Theme = "Dark"
+                    }
+                )
+
+                local Options = Fluent.Options
+
+                Fluent:Notify(
+                    {
+                        Title = "Welcome to NexusZ",
+                        Content = "Thanks for using NexusZ!",
+                        SubContent = "",
+                        Duration = 7
+                    }
+                )
+
+                local Tabs = {
+                    Tab1 = Window:AddTab({Title = "Home", Icon = "info"}),
+                    Tab2 = Window:AddTab({Title = "Local Player", Icon = "user"}),
+                    Tab3 = Window:AddTab({Title = "Combat", Icon = "sword"}),
+                    Tab4 = Window:AddTab({Title = "Mobility", Icon = "rbxassetid://18949377717"}),
+                    Tab5 = Window:AddTab({Title = "Teleport", Icon = "rbxassetid://9283903067"}),
+                    Settings = Window:AddTab({Title = "Settings", Icon = "settings"})
+                }
+
+                local Section = Tabs.Tab1:AddSection("Developed by")
+
+
+                Tabs.Tab1:AddParagraph(
+                    {
+                        Title = "oldman_error69",
+                        Content = ""
+                    }
+                )
+                Tabs.Tab1:AddParagraph(
+                    {
+                        Title = "Shazain",
+                        Content = ""
+                    }
+                )
+
+                local Section = Tabs.Tab1:AddSection("Discord manager")
+
+                Tabs.Tab1:AddParagraph(
+                    {
+                        Title = "ahmed645",
+                        Content = ""
+                    }
+                )
+
+                local discordServerLink = "https://discord.gg/gVdSjH4Nzc"
+
+                Tabs.Tab1:AddButton(
+                    {
+                        Title = "Copy Discord Link",
+                        Description = "",
+                        Callback = function()
+                            setclipboard(discordServerLink)
+                        end
+                    }
+                )
+
+local Player = game:GetService("Players").LocalPlayer
+local UIS = game:GetService("UserInputService")
+local JumpKey = Enum.KeyCode.Space
+
+local isJumpEnabled = false
+
+local function CharacterAdded(Character)
+    local Humanoid = Character:WaitForChild("Humanoid")
+    local RootPart = Character:WaitForChild("HumanoidRootPart")
+    local CanJump = true
+    
+    UIS.InputBegan:Connect(function(Input, GameProcessed)
+        if not GameProcessed and isJumpEnabled and Input.KeyCode == JumpKey and CanJump then
+            CanJump = false
+            RootPart.Velocity = Vector3.new(RootPart.Velocity.X, 50, RootPart.Velocity.Z)
+            task.wait(0.1)
+            CanJump = true
+        end
+    end)
+
+    UIS.JumpRequest:Connect(function()
+        if isJumpEnabled and CanJump then
+            CanJump = false
+            RootPart.Velocity = Vector3.new(RootPart.Velocity.X, 50, RootPart.Velocity.Z)
+            task.wait(0.1)
+            CanJump = true
+        end
+    end)
+end
+
+Player.CharacterAdded:Connect(CharacterAdded)
+if Player.Character then
+    CharacterAdded(Player.Character)
+end
+
+local Toggle =
+    Tabs.Tab2:AddToggle(
+    "MyToggle",
+    {
+        Title = "Infinity Jumps",
+        Description = "",
+        Default = false,
+        Callback = function(state)
+            isJumpEnabled = state
+        end
+    }
+)
+
+local player = game:GetService("Players").LocalPlayer
+local staminaToggleState = false
+
+local function updateStamina()
+    local char = player.Character
+    local stamina = char and char:FindFirstChild("stamina")
+
+    if stamina and stamina:IsA("LocalScript") then
+        stamina.Enabled = not staminaToggleState
+    end
+end
+
+local ToggleStamina =
+    Tabs.Tab2:AddToggle(
+    "MyToggle",
+    {
+        Title = "Infinity Stamina",
+        Description = "",
+        Default = false,
+        Callback = function(state)
+            staminaToggleState = state
+            updateStamina()
+        end
+    }
+)
+
+player.CharacterAdded:Connect(function()
+    wait(0.1)
+    updateStamina()
+end)
+
+local player = game:GetService("Players").LocalPlayer
+local fallDamageToggleState = false
+
+local function updateFallDamage()
+    local char = player.Character
+    local fallDamage = char and char:FindFirstChild("fallDamage")
+
+    if fallDamage and fallDamage:IsA("LocalScript") then
+        fallDamage.Enabled = not fallDamageToggleState
+    end
+end
+
+local ToggleFallDamage =
+    Tabs.Tab2:AddToggle(
+    "MyToggleFallDamage",
+    {
+        Title = "Anti FallDamage",
+        Description = "",
+        Default = false,
+        Callback = function(state)
+            fallDamageToggleState = state
+            updateFallDamage()
+        end
+    }
+)
+
+player.CharacterAdded:Connect(function()
+    wait(0.1)
+    updateFallDamage()
+end)
+                    
+
+
+                local ToggleNoclip = Tabs.Tab2:AddToggle("NoclipToggle", {Title = "NoClip", Default = false})
+                local NoclipConnection = nil
+                local Clip = false
+                local OriginalCollisions = {}
+
+                local function noclip()
+                    Clip = false
+                    local function Nocl()
+                        if not Clip and game.Players.LocalPlayer.Character then
+                            for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+                                if v:IsA("BasePart") and v.CanCollide then
+                                    OriginalCollisions[v] = v.CanCollide
+                                    v.CanCollide = false
+                                end
+                            end
+                        end
+                        wait(0.21)
+                    end
+                    NoclipConnection = game:GetService("RunService").Stepped:Connect(Nocl)
+                end
+
+                local function clip()
+                    if NoclipConnection then
+                        NoclipConnection:Disconnect()
+                        NoclipConnection = nil
+                    end
+                    Clip = true
+                    for part, collision in pairs(OriginalCollisions) do
+                        if part and part:IsA("BasePart") then
+                            part.CanCollide = collision
+                        end
+                    end
+                    OriginalCollisions = {}
+                end
+
+                ToggleNoclip:OnChanged(
+                    function(value)
+                        if value then
+                            noclip()
+                        else
+                            clip()
+                        end
+                        print("Noclip Toggle changed:", value)
+                    end
+                )
+
+                local Section = Tabs.Tab2:AddSection("Auto Heal")
+local player = game.Players.LocalPlayer
+local autoHealEnabled = false
+
+local function healWithCabbage()
+    while autoHealEnabled do
+        if not player.Character or not player.Character:FindFirstChild("Humanoid") then
+            player.CharacterAdded:Wait()
+        end
+        
+        local humanoid = player.Character:WaitForChild("Humanoid")
+        local maxHealth = humanoid.MaxHealth
+        
+        if humanoid.Health < maxHealth then
+            repeat
+                game:GetService("ReplicatedStorage").remoteInterface.interactions.eat:FireServer(210)
+                task.wait(0.05)
+            until humanoid.Health >= maxHealth or not autoHealEnabled
+        end
+        task.wait(0.1)
+    end
+end
+
+local AutoHealCabbage = Tabs.Tab2:AddToggle(
+    "CabbageHeal",
+    {
+        Title = "Auto Heal",
+        Description = "Cabbage",
+        Default = false,
+        Callback = function(state)
+            autoHealEnabled = state
+            if state then
+                healWithCabbage()
+            end
+        end
+    }
+)
+
+player.CharacterAdded:Connect(function()
+    if autoHealEnabled then
+        task.wait(1)
+        healWithCabbage()
+    end
+end)
+
+local player = game.Players.LocalPlayer
+local autoHealEnabled = false
+
+local function healWithBerry()
+    while autoHealEnabled do
+        if not player.Character or not player.Character:FindFirstChild("Humanoid") then
+            player.CharacterAdded:Wait()
+        end
+        
+        local humanoid = player.Character:WaitForChild("Humanoid")
+        local maxHealth = humanoid.MaxHealth
+        
+        if humanoid.Health < maxHealth then
+            repeat
+                game:GetService("ReplicatedStorage").remoteInterface.interactions.eat:FireServer(113)
+                task.wait(0.05)
+            until humanoid.Health >= maxHealth or not autoHealEnabled
+        end
+        task.wait(0.1)
+    end
+end
+
+local AutoHealBerry = Tabs.Tab2:AddToggle(
+    "BerryHeal",
+    {
+        Title = "Auto Heal",
+        Description = "Berry",
+        Default = false,
+        Callback = function(state)
+            autoHealEnabled = state
+            if state then
+                healWithBerry()
+            end
+        end
+    }
+)
+
+player.CharacterAdded:Connect(function()
+    if autoHealEnabled then
+        task.wait(1)
+        healWithBerry()
+    end
+end)
+
+
+local respawnArgs = {5917762, 5, 5, 13, 13405801, 12950139, false}
+local lastDeathPosition = nil
+local respawnDebounce = false
+local shouldAutoRespawn = false
+local isTeleporting = false
+local teleportDelay = 0.2
+
+local function destroyAvatarGUI()
+    local player = game:GetService("Players").LocalPlayer
+    if player:FindFirstChild("PlayerGui") then
+        local avatarGUI = player.PlayerGui:FindFirstChild("Avatar")
+        if avatarGUI then
+            avatarGUI:Destroy()
+        end
+    end
+end
+
+local function attemptRespawn()
+    if respawnDebounce then return end
+    respawnDebounce = true
+    
+    local rs = game:GetService("ReplicatedStorage")
+    if not rs then 
+        respawnDebounce = false
+        return 
+    end
+    
+    local remoteInterface = rs:FindFirstChild("remoteInterface")
+    if not remoteInterface then 
+        respawnDebounce = false
+        return 
+    end
+    
+    local characterFolder = remoteInterface:FindFirstChild("character")
+    if not characterFolder then 
+        respawnDebounce = false
+        return 
+    end
+    
+    local resetRemote = characterFolder:FindFirstChild("reset")
+    if resetRemote then
+        resetRemote:InvokeServer()
+    end
+    
+    local respawnRemote = characterFolder:FindFirstChild("respawn")
+    if respawnRemote then
+        respawnRemote:InvokeServer(unpack(respawnArgs))
+    end
+    
+    respawnDebounce = false
+end
+
+local function teleport(cframe)
+    isTeleporting = true
+    local player = game.Players.LocalPlayer
+    local maxWaitTime = 0.5
+    local startTime = tick()
+    
+    while not player.Character and tick() - startTime < maxWaitTime do
+        task.wait(0.2)
+    end
+    
+    if not player.Character then 
+        isTeleporting = false
+        return 
+    end
+    
+    local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
+    local waitTime = 0
+    
+    while not humanoidRootPart and waitTime < maxWaitTime do
+        task.wait(0.2)
+        waitTime = waitTime + 0.01
+        humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
+    end
+    
+    if humanoidRootPart then
+        humanoidRootPart.CFrame = cframe
+    end
+    isTeleporting = false
+end
+
+local function checkAndRespawn()
+    if not shouldAutoRespawn or isTeleporting then return end
+    
+    local player = game.Players.LocalPlayer
+    
+    if not player.Character or not workspace:FindFirstChild(player.Name) then
+        if lastDeathPosition then
+            task.wait(0.00014)
+            attemptRespawn()
+            destroyAvatarGUI()
+            task.wait(teleportDelay)
+            teleport(CFrame.new(lastDeathPosition))
+        end
+    end
+end
+
+task.spawn(function()
+    while true do
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then
+                local rootPart = character:FindFirstChild("HumanoidRootPart")
+                if rootPart then
+                    lastDeathPosition = rootPart.Position
+                end
+                
+                if not humanoid:FindFirstChild("DeathTracker") then
+                    local tracker = Instance.new("BoolValue")
+                    tracker.Name = "DeathTracker"
+                    tracker.Parent = humanoid
+                    
+                    humanoid.Died:Connect(function()
+                        local dyingRoot = character:FindFirstChild("HumanoidRootPart")
+                        if dyingRoot then
+                            lastDeathPosition = dyingRoot.Position
+                        end
+                        checkAndRespawn()
+                    end)
+                end
+            end
+        else
+            checkAndRespawn()
+        end
+        
+        task.wait(0.00014)
+    end
+end)
+
+local Toggle = Tabs.Tab3:AddToggle("MyToggle", {Title = "Instant Respawn", Default = false})
+
+Toggle:OnChanged(function()
+    shouldAutoRespawn = Toggle.Value
+    if shouldAutoRespawn then
+        destroyAvatarGUI()
+    end
+end)
+
+local TeleportDelaySlider = Tabs.Tab3:AddSlider(
+    "TeleportDelaySlider",
+    {
+        Title = "Teleport Delay",
+        Min = 0.1,
+        Max = 5,
+        Default = 0.2,
+        Rounding = 1,
+        Callback = function(value)
+            teleportDelay = value
+        end
+    }
+)
+
+                local Section = Tabs.Tab3:AddSection("Kill aura")
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local rootPart = character:WaitForChild("HumanoidRootPart")
+
+local Crypt = require(ReplicatedStorage:WaitForChild("Crypt"))
+local AiController = require(player.PlayerScripts:WaitForChild("AIController"))
+local remoteInterface = ReplicatedStorage:WaitForChild("remoteInterface")
+local interactions = remoteInterface:WaitForChild("interactions")
+local meleeAiRemote = interactions:WaitForChild("meleeAI")
+local meleePlayerRemote = interactions:WaitForChild("meleePlayer")
+
+local attackRange = 45
+local attackCooldown = 0.2
+local lastAttackTime = 0
+local killAuraActive = false
+
+local toggle = Tabs.Tab3:AddToggle(
+    "KillAuraToggle",
+    {
+        Title = "Kill Aura",
+        Description = "use slot 1",
+        Default = false,
+        Callback = function(enabled)
+            killAuraActive = enabled
+        end
+    }
+)
+
+local function onHumanoidDied()
+    killAuraActive = false
+    if toggle then
+        toggle:SetState(false)
+    end
+end
+
+local function updateCharacterRefs(newCharacter)
+    character = newCharacter
+    humanoid = character:WaitForChild("Humanoid")
+    rootPart = character:WaitForChild("HumanoidRootPart")
+
+    humanoid.Died:Connect(onHumanoidDied)
+end
+
+player.CharacterAdded:Connect(function(newChar)
+    updateCharacterRefs(newChar)
+end)
+
+RunService.Heartbeat:Connect(function()
+    if not killAuraActive then return end
+    if not humanoid or humanoid.Health <= 0 then return end
+    if tick() - lastAttackTime < attackCooldown then return end
+
+    local bestSlot = 1
+
+    local pos = rootPart.Position
+    local nearestDist = attackRange + 1
+    local nearestTarget = nil
+
+    local aiFolder = Workspace:FindFirstChild("AI_Client")
+    if aiFolder then
+        for _, npc in ipairs(aiFolder:GetChildren()) do
+            local npcHumanoid = npc:FindFirstChildOfClass("Humanoid")
+            local npcRoot = npc:FindFirstChild("HumanoidRootPart") or npc.PrimaryPart
+            if npcHumanoid and npcHumanoid.Health > 0 and npcRoot then
+                local dist = (npcRoot.Position - pos).Magnitude
+                if dist < nearestDist then
+                    nearestDist = dist
+                    nearestTarget = npc
+                end
+            end
+        end
+    end
+
+    for _, otherPlayer in ipairs(Players:GetPlayers()) do
+        if otherPlayer ~= player and otherPlayer.Character then
+            local otherHumanoid = otherPlayer.Character:FindFirstChildOfClass("Humanoid")
+            local otherRoot = otherPlayer.Character:FindFirstChild("HumanoidRootPart") or otherPlayer.Character.PrimaryPart
+            if otherHumanoid and otherHumanoid.Health > 0 and otherRoot then
+                local dist = (otherRoot.Position - pos).Magnitude
+                if dist < nearestDist then
+                    nearestDist = dist
+                    nearestTarget = otherPlayer.Character
+                end
+            end
+        end
+    end
+
+    if nearestTarget then
+        local targetPlayer = Players:GetPlayerFromCharacter(nearestTarget)
+        if targetPlayer then
+            local k1, k2, k3 = Crypt.checkpublickeys()
+            if k1 and k2 and k3 then
+                local encryptedUserId = Crypt.crypt(k1, math.abs(targetPlayer.UserId) + k3, k2)
+                meleePlayerRemote:FireServer(bestSlot, encryptedUserId)
+            end
+        else
+            local serverModel = AiController:GetServerModelFromClientModel(nearestTarget)
+            if serverModel then
+                meleeAiRemote:FireServer(bestSlot, serverModel)
+            end
+        end
+        lastAttackTime = tick()
+    end
+end)
+
+local player = game.Players.LocalPlayer
+local character
+local humanoidRootPart
+local orbitSettings = {
+    Radius = 10,
+    Height = 0,
+    Speed = 2,
+}
+local isActive = false
+local currentTarget = nil
+local currentAngle = 0
+local platform = nil
+local connections = {}
+
+local function setupCharacter()
+    connections = {}
+    
+    character = player.Character or player.CharacterAdded:Wait()
+    humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    
+    local humanoid = character:WaitForChild("Humanoid")
+    connections.died = humanoid.Died:Connect(function()
+        if platform then
+            platform:Destroy()
+            platform = nil
+        end
+        currentTarget = nil
+        
+        if isActive then
+            player.CharacterAdded:Wait()
+            setupCharacter()
+        end
+    end)
+end
+
+setupCharacter()
+
+local function isValidTarget(char)
+    return char and char.Parent and char:FindFirstChild("HumanoidRootPart") and 
+           char:FindFirstChild("Humanoid") and char.Humanoid.Health > 0
+end
+
+local function updatePlatform(position)
+    if platform then
+        platform.Position = position - Vector3.new(0, 3, 0)
+    else
+        platform = Instance.new("Part")
+        platform.Size = Vector3.new(5, 1, 5)
+        platform.Anchored = true
+        platform.CanCollide = false
+        platform.Transparency = 1
+        platform.Position = position - Vector3.new(0, 3, 0)
+        platform.Parent = workspace
+    end
+end
+
+local function getOrUpdateTarget()
+    if not (character and character.Parent) then return nil end
+    
+    if currentTarget and isValidTarget(currentTarget.Character) then
+        return currentTarget
+    end
+    
+    currentTarget = nil
+    local closestDist = 30
+    
+    for _, otherPlayer in ipairs(game.Players:GetPlayers()) do
+        if otherPlayer ~= player and isValidTarget(otherPlayer.Character) then
+            local dist = (humanoidRootPart.Position - otherPlayer.Character.HumanoidRootPart.Position).Magnitude
+            if dist < closestDist then
+                closestDist = dist
+                currentTarget = otherPlayer
+            end
+        end
+    end
+    
+    return currentTarget
+end
+
+local function orbitUpdate()
+    if not isActive or not (character and character.Parent) then
+        if platform then platform:Destroy() end
+        return 
+    end
+    
+    local target = getOrUpdateTarget()
+    if not target then return end
+    
+    local targetPos = target.Character.HumanoidRootPart.Position
+    local speedRadians = math.rad(orbitSettings.Speed)
+    currentAngle = (currentAngle + speedRadians) % (2 * math.pi)
+    
+    local orbitPos = targetPos + Vector3.new(
+        math.cos(currentAngle) * orbitSettings.Radius,
+        orbitSettings.Height,
+        math.sin(currentAngle) * orbitSettings.Radius
+    )
+    
+    humanoidRootPart.CFrame = CFrame.new(orbitPos, targetPos)
+    updatePlatform(orbitPos)
+end
+
+local function startOrbit()
+    if connections.heartbeat then connections.heartbeat:Disconnect() end
+    connections.heartbeat = game:GetService("RunService").Heartbeat:Connect(orbitUpdate)
+end
+
+local function stopOrbit()
+    if connections.heartbeat then connections.heartbeat:Disconnect() end
+    if platform then platform:Destroy() end
+    currentTarget = nil
+end
+
+local Toggle = Tabs.Tab3:AddToggle("OrbitToggle", {
+    Title = "Orbit Target",
+    Default = false,
+    Callback = function(state)
+        isActive = state
+        if state then 
+            setupCharacter()
+            startOrbit() 
+        else 
+            stopOrbit() 
+        end
+    end
+})
+
+Tabs.Tab3:AddSlider("SpeedSlider", {
+    Title = "Orbit Speed",
+    Min = 0.1,
+    Max = 15,
+    Rounding = 1,
+    Default = 5.5,
+    Callback = function(value)
+        orbitSettings.Speed = value
+    end
+})
+
+Tabs.Tab3:AddSlider("RadiusSlider", {
+    Title = "Orbit Radius",
+    Min = 1,
+    Max = 20,
+    Rounding = 1,
+    Default = 12.5,
+    Callback = function(value)
+        orbitSettings.Radius = value
+    end
+})
+
+Tabs.Tab3:AddSlider("HeightSlider", {
+    Title = "Orbit Height",
+    Min = -5,
+    Max = 20,
+    Rounding = 1,
+    Default = 8.5,
+    Callback = function(value)
+        orbitSettings.Height = value
+    end
+})
+
+
+local character = game.Players.LocalPlayer.Character
+local humanoid = character:WaitForChild("Humanoid")
+
+local platform = Instance.new("Part")
+platform.Anchored = true
+platform.Size = Vector3.new(5, 1, 5)
+platform.Transparency = 1
+platform.Position = Vector3.new(0, -100, 0)
+platform.Parent = game.Workspace
+
+local function getNearestPlayer()
+    local nearestPlayer = nil
+    local nearestDistance = 35
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player ~= game.Players.LocalPlayer and player.Character then
+            local distance =
+                (player.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).magnitude
+            if distance < nearestDistance then
+                nearestDistance = distance
+                nearestPlayer = player
+            end
+        end
+    end
+    return nearestPlayer
+end
+
+
+
+
+
+
+
+local platform = nil
+local player = game.Players.LocalPlayer
+local toggle = false
+local targetPlayer = nil
+local character = nil
+
+local settings = {
+    teleportRadius = 15,
+    teleportHeight = 6,
+    searchRadius = 35
+}
+
+local function getNearestPlayer(maxDistance)
+    maxDistance = maxDistance or settings.searchRadius
+    local nearestPlayer = nil
+    local shortestDistance = maxDistance
+    for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+        if otherPlayer ~= player and otherPlayer.Character and otherPlayer.Character:FindFirstChild("Humanoid") and otherPlayer.Character.Humanoid.Health > 0 then
+            local distance = (character.HumanoidRootPart.Position - otherPlayer.Character.HumanoidRootPart.Position).Magnitude
+            if distance <= shortestDistance then
+                shortestDistance = distance
+                nearestPlayer = otherPlayer
+            end
+        end
+    end
+    return nearestPlayer
+end
+
+local function teleportAroundNearestPlayer(nearestPlayer)
+    if nearestPlayer and nearestPlayer.Character and nearestPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local radius = math.clamp(settings.teleportRadius * 0.5 + math.random() * settings.teleportRadius, 4, 30)
+        local angle = math.random() * 2 * math.pi
+        local height = math.clamp(settings.teleportHeight - 8 + math.random() * 10, -10, 30)
+
+        local newX = nearestPlayer.Character.HumanoidRootPart.Position.X + math.cos(angle) * radius
+        local newY = nearestPlayer.Character.HumanoidRootPart.Position.Y + height
+        local newZ = nearestPlayer.Character.HumanoidRootPart.Position.Z + math.sin(angle) * radius
+
+        if not platform then
+            platform = Instance.new("Part")
+            platform.Name = "TeleportPlatform"
+            platform.Anchored = true
+            platform.CanCollide = true
+            platform.Size = Vector3.new(10, 1, 10)
+            platform.Transparency = 1
+            platform.Parent = workspace
+        end
+
+        platform.Position = Vector3.new(newX, newY - 3, newZ)
+        character.HumanoidRootPart.CFrame = CFrame.new(newX, newY + 1, newZ)
+    end
+end
+
+local function teleportLoop()
+    while toggle and character and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0 do
+        if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") and targetPlayer.Character.Humanoid.Health > 0 then
+            teleportAroundNearestPlayer(targetPlayer)
+        else
+            targetPlayer = getNearestPlayer(settings.searchRadius)
+        end
+        wait(0.35)
+    end
+    if platform then
+        platform:Destroy()
+        platform = nil
+    end
+end
+
+local function onPlayerDied()
+    toggle = false
+end
+
+local function onCharacterAdded(newCharacter)
+    character = newCharacter
+    if newCharacter:FindFirstChild("Humanoid") then
+        newCharacter.Humanoid.Died:Connect(onPlayerDied)
+    end
+    if toggle then
+        targetPlayer = getNearestPlayer(settings.searchRadius)
+        spawn(teleportLoop)
+    end
+end
+
+local Toggle = Tabs.Tab3:AddToggle("MyToggle", {
+    Title = "Circle Teleport HVH",
+    Description = "Best against hackers",
+    Default = false,
+    Callback = function(state)
+        toggle = state
+        if state then
+            targetPlayer = getNearestPlayer(settings.searchRadius)
+            spawn(teleportLoop)
+        elseif platform then
+            platform:Destroy()
+            platform = nil
+        end
+    end
+})
+
+Tabs.Tab3:AddSlider("RadiusSlider", {
+    Title = "Teleport Radius",
+    Min = 4,
+    Max = 30,
+    Rounding = 1,
+    Default = 15,
+    Callback = function(value)
+        settings.teleportRadius = value
+    end
+})
+
+Tabs.Tab3:AddSlider("HeightSlider", {
+    Title = "Teleport Height",
+    Min = -10,
+    Max = 30,
+    Rounding = 1,
+    Default = 6,
+    Callback = function(value)
+        settings.teleportHeight = value
+    end
+})
+
+player.CharacterAdded:Connect(onCharacterAdded)
+if player.Character then
+    onCharacterAdded(player.Character)
+end
+
+local Section = Tabs.Tab3:AddSection("Others")
+local Players = game:GetService('Players')
+local LocalPlayer = Players.LocalPlayer
+
+local hitboxSize = Vector3.new(2, 2, 1)
+local hitboxColor = BrickColor.new("Medium stone grey")
+local isHitboxExtended = false
+
+local function modifyHumanoidRootPart(player, size, transparency, color, material, canCollide)
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local humanoidRootPart = player.Character.HumanoidRootPart
+        humanoidRootPart.Size = size
+        humanoidRootPart.Transparency = transparency
+        humanoidRootPart.BrickColor = color
+        humanoidRootPart.Material = material
+        humanoidRootPart.CanCollide = canCollide
+    end
+end
+
+local function applyHitboxModifications()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            modifyHumanoidRootPart(player, hitboxSize, 0.9, hitboxColor, "Neon", false)
+        end
+    end
+end
+
+local function revertHitboxModifications()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            modifyHumanoidRootPart(player, Vector3.new(2, 2, 1), 1, BrickColor.new("Medium stone grey"), "Plastic", true)
+        end
+    end
+end
+
+local Toggle =
+    Tabs.Tab3:AddToggle(
+    "MyToggle",
+    {
+        Title = "HitBox Extender",
+        Description = "",
+        Default = false,
+        Callback = function(state)
+            isHitboxExtended = state
+            if state then
+                applyHitboxModifications()
+            else
+                revertHitboxModifications()
+            end
+        end
+    }
+)
+
+local sizeSlider =
+    Tabs.Tab3:AddSlider(
+    "SizeSlider",
+    {
+        Title = "Hitbox Size",
+        Min = 2,
+        Max = 30,
+        Default = 15,
+        Rounding = 1,
+        Callback = function(value)
+            hitboxSize = Vector3.new(value, value, value)
+            if isHitboxExtended then
+                applyHitboxModifications()
+            end
+        end
+    }
+)
+
+
+                local Players = game:GetService("Players")
+                local runService = game:GetService("RunService")
+                local LocalPlayer = Players.LocalPlayer
+                local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+
+                local speedSection = Tabs.Tab4:AddSection("WalkSpeed")
+
+                local speedOptions = {20, 30, 35, 40}
+                local selectedSpeed = 30
+                local speedEnabled = false
+
+                local function onHeartbeat(dt)
+                    if not speedEnabled then
+                        return
+                    end
+
+                    if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("Humanoid") then
+                        return
+                    end
+
+                    local humanoid = LocalPlayer.Character.Humanoid
+                    local humanoidRootPart = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+                    if not humanoidRootPart then
+                        return
+                    end
+
+                    local moveDirection = humanoid.MoveDirection
+                    local factor = selectedSpeed - humanoid.WalkSpeed
+                    local multMD = (moveDirection * dt) * factor
+
+                    LocalPlayer.Character:TranslateBy(multMD)
+                end
+
+                runService.Heartbeat:Connect(onHeartbeat)
+
+                local Dropdown =
+                    speedSection:AddDropdown(
+                    "SpeedDropdown",
+                    {
+                        Title = "Speed",
+                        Values = speedOptions,
+                        Multi = false,
+                        Default = tostring(selectedSpeed),
+                        Callback = function(selected)
+                            selectedSpeed = tonumber(selected)
+                        end
+                    }
+                )
+
+                speedSection:AddButton(
+                    {
+                        Title = "Enable",
+                        Description = "Best is 30",
+                        Callback = function()
+                            speedEnabled = true
+                        end
+                    }
+                )
+
+                speedSection:AddButton(
+                    {
+                        Title = "Disable",
+                        Description = "",
+                        Callback = function()
+                            speedEnabled = false
+                        end
+                    }
+                )
+
+                local Section = Tabs.Tab4:AddSection("Jump Power")
+
+ local player = game:GetService("Players").LocalPlayer
+local higherJumpToggleState = false
+
+local function updateJumpPower()
+    local char = player.Character
+    if char and char:FindFirstChild("Humanoid") then
+        local jumpPower = higherJumpToggleState and 100 or 50
+        char.Humanoid.JumpPower = jumpPower
+    end
+end
+
+local ToggleHigherJump =
+    Tabs.Tab4:AddToggle(
+    "MyToggle",
+    {
+        Title = "Higher Jump",
+        Description = "",
+        Default = false,
+        Callback = function(state)
+            higherJumpToggleState = state
+            updateJumpPower()
+        end
+    }
+)
+
+player.CharacterAdded:Connect(function()
+    wait(0.1)
+    updateJumpPower()
+end)
+
+                local section3 = Tabs.Tab4:AddSection("Fly")
+
+local runService = game:GetService("RunService")
+local userInputService = game:GetService("UserInputService")
+local localPlayer = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+local vars = {
+    invisiblefly = false,
+    playerClone = nil,
+    flySpeed = 1,
+    wasInvisibleFlyEnabled = false
+}
+
+local function getHumanoid(player)
+    if player.Character then
+        return player.Character:FindFirstChild("Humanoid")
+    end
+end
+
+local function getRoot(player)
+    if player.Character then
+        return player.Character:FindFirstChild("HumanoidRootPart")
+    end
+end
+
+local function onInvisibleFlyToggle(value)
+    if vars.invisiblefly and vars.playerClone then
+        vars.playerClone:Destroy()
+        vars.playerClone = nil
+    end
+
+    vars.invisiblefly = value
+
+    if value then
+        vars.wasInvisibleFlyEnabled = true
+        repeat
+            wait()
+        until localPlayer.Character
+
+        vars.playerClone = localPlayer.Character:Clone()
+        vars.playerClone.Parent = workspace
+
+        while vars.invisiblefly do
+            runService.Heartbeat:Wait()
+
+            if vars.playerClone and vars.playerClone:FindFirstChild("HumanoidRootPart") then
+                local root = getRoot(localPlayer)
+                local hum = getHumanoid(localPlayer)
+
+                if not (root and hum and vars.playerClone) then
+                    return
+                end
+
+                camera.CameraSubject =
+                    vars.playerClone:FindFirstChild("Humanoid") or localPlayer.Character.Humanoid
+
+                hum:ChangeState("Climbing")
+                localPlayer.Character:PivotTo(vars.playerClone:GetPivot() + Vector3.new(0, 500, 0))
+
+                root.Velocity = Vector3.zero
+
+                local lookPosition = camera.CFrame.Position + camera.CFrame.LookVector * 9999
+
+                vars.playerClone.HumanoidRootPart.CFrame =
+                    CFrame.new(
+                    vars.playerClone.HumanoidRootPart.Position,
+                    Vector3.new(
+                        lookPosition.X,
+                        vars.playerClone.HumanoidRootPart.Position.Y,
+                        lookPosition.Z
+                    )
+                )
+                vars.playerClone.HumanoidRootPart.Anchored = true
+
+                vars.playerClone.HumanoidRootPart.CFrame =
+                    CFrame.new(
+                    vars.playerClone.HumanoidRootPart.Position + hum.MoveDirection / 10 * vars.flySpeed,
+                    Vector3.new(
+                        lookPosition.X,
+                        vars.playerClone.HumanoidRootPart.Position.Y,
+                        lookPosition.Z
+                    )
+                )
+
+                if userInputService:IsKeyDown(Enum.KeyCode.Space) then
+                    vars.playerClone.HumanoidRootPart.CFrame =
+                        CFrame.new(
+                        vars.playerClone.HumanoidRootPart.Position + Vector3.new(0, 0.2, 0),
+                        Vector3.new(
+                            lookPosition.X,
+                            vars.playerClone.HumanoidRootPart.Position.Y,
+                            lookPosition.Z
+                        )
+                    )
+                end
+
+                if userInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
+                    vars.playerClone.HumanoidRootPart.CFrame =
+                        CFrame.new(
+                        vars.playerClone.HumanoidRootPart.Position - Vector3.new(0, 0.2, 0),
+                        Vector3.new(
+                            lookPosition.X,
+                            vars.playerClone.HumanoidRootPart.Position.Y,
+                            lookPosition.Z
+                        )
+                    )
+                end
+            end
+        end
+
+        camera.CameraSubject = getHumanoid(localPlayer)
+
+        if vars.playerClone then
+            localPlayer.Character:PivotTo(vars.playerClone:GetPivot())
+            vars.playerClone:Destroy()
+            vars.playerClone = nil
+        end
+    else
+        if vars.wasInvisibleFlyEnabled then
+            local root = getRoot(localPlayer)
+            if root then
+                local currentCFrame = root.CFrame
+                local newCFrame =
+                    CFrame.new(
+                    currentCFrame.Position.X,
+                    currentCFrame.Position.Y - 500,
+                    currentCFrame.Position.Z
+                )
+                localPlayer.Character:PivotTo(newCFrame)
+            end
+            vars.wasInvisibleFlyEnabled = false
+        end
+    end
+end
+
+local ToggleInvisibleFly =
+    Tabs.Tab4:AddToggle(
+    "InvisibleFlyToggle",
+    {
+        Title = "Invisible Fly (Bug)",
+        Default = false,
+        Callback = function(state)
+            onInvisibleFlyToggle(state)
+        end
+    }
+)
+
+local InvFlySlider =
+    Tabs.Tab4:AddSlider(
+    "InvFlySlider",
+    {
+        Title = "InvisibleFly Speed",
+        Min = 1,
+        Max = 15,
+        Default = 5,
+        Rounding = 1,
+        Callback = function(value)
+            vars.flySpeed = value
+        end
+    }
+)
+
+local respawnArgs = {5917762, 5, 5, 13, 13405801, 12950139, false}
+local teleporting = false
+local targetPlayer = nil
+local localPlayer = game.Players.LocalPlayer
+local rs = game:GetService("ReplicatedStorage")
+local teleportConnection = nil
+
+local function resetAndRespawn()
+    local success = false
+    local remoteInterface = rs:FindFirstChild("remoteInterface")
+    if not remoteInterface then return false end
+    
+    local characterFolder = remoteInterface:FindFirstChild("character")
+    if not characterFolder then return false end
+    
+    local resetRemote = characterFolder:FindFirstChild("reset")
+    if resetRemote then 
+        resetRemote:InvokeServer()
+        task.wait(0.1)
+    end
+    
+    local respawnRemote = characterFolder:FindFirstChild("respawn")
+    if respawnRemote then
+        respawnRemote:InvokeServer(unpack(respawnArgs))
+        task.wait(0.3)
+        success = true
+    end
+    return success
+end
+
+local function teleportToPlayer()
+    if not targetPlayer or not targetPlayer.Character then return false end
+    
+    local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart", 5)
+    
+    if humanoidRootPart and targetPlayer.Character then
+        humanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame
+        return true
+    end
+    return false
+end
+
+local function startLoopTeleport()
+    if teleportConnection then teleportConnection:Disconnect() end
+    
+    teleportConnection = game:GetService("RunService").Heartbeat:Connect(function()
+        if teleporting and targetPlayer and targetPlayer.Character then
+            local char = localPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                char.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame
+            end
+        else
+            if teleportConnection then
+                teleportConnection:Disconnect()
+                teleportConnection = nil
+            end
+        end
+    end)
+end
+
+local Input = Tabs.Tab5:AddInput("PlayerInput", {
+    Title = "Player Teleporter",
+    Default = "",
+    Placeholder = "Enter Player Name",
+    Numeric = false,
+    Finished = true,
+    Callback = function(Value)
+        if #Value < 3 then return end
+        
+        local matches = {}
+        for _, player in pairs(game.Players:GetPlayers()) do
+            if string.find(player.Name:lower(), Value:lower(), 1, true) or 
+               string.find(player.DisplayName:lower(), Value:lower(), 1, true) then
+                table.insert(matches, player)
+            end
+        end
+        
+        if #matches == 1 then
+            targetPlayer = matches[1]
+            
+            if resetAndRespawn() then
+                if teleportToPlayer() then
+                    if teleporting then
+                        startLoopTeleport()
+                    else
+                        targetPlayer = nil
+                    end
+                end
+            end
+        end
+    end
+})
+
+local Toggle = Tabs.Tab5:AddToggle("TeleportToggle", {
+    Title = "Loop Teleport",
+    Default = false,
+    Callback = function(state)
+        teleporting = state
+        if not state and teleportConnection then
+            teleportConnection:Disconnect()
+            teleportConnection = nil
+            targetPlayer = nil
+        end
+    end
+})
+
+                local section = Tabs.Tab5:AddSection("Teleports")
+
+local respawnArgs = {5917762, 5, 5, 13, 13405801, 12950139, false}
+
+local cframes = {
+    CFrame.new(1286, 25, -169), --Desert
+    CFrame.new(1513.0150146484375, 14.353964805603027, -239.69000244140625), --Desert Middle
+    CFrame.new(1503.6719970703125, 25.200437545776367, 136.9167938232422), --Desert temple
+    CFrame.new(1173.9698486328125, 71.32542419433594, -604.4287109375), --Desert hill
+    CFrame.new(1632.7591552734375, 94.48167419433594, -694.8118286132812), --Desert Maze
+    CFrame.new(-271.5625305175781, 25.262937545776367, 443.14508056640625), --MainLand
+    CFrame.new(244.31166076660156, 25.262937545776367, -789.3369140625), --Near MainLand
+    CFrame.new(-193.63011169433594, 47.49728775024414, 1266.1500244140625), --Stone Land
+    CFrame.new(-383.97918701171875, 21.483291625976562, -486.12109375), --Middle Iron Mine
+    CFrame.new(-1881.626220703125, 14.35396671295166, 383.7140197753906), --Jungle
+    CFrame.new(-2539.364013671875, 115.88792419433594, 561.3760986328125), --Jungle Temple
+    CFrame.new(-1143.6123046875, 14.353963851928711, -1821.26416015625), --Arctic
+    CFrame.new(-1441.9932861328125, 175.2628936767578, -1854.894287109375), --Arctic Mountain
+    CFrame.new(802.4169311523438, 14.35396671295166, -1999.3514404296875), --Kraken
+    CFrame.new(1708.0306396484375, 14.35387134552002, 1839.9573974609375), --Volcano
+    CFrame.new(1653.0208740234375, 23.200437545776367, 2289.078125), --Titan
+    CFrame.new(-1683, 517, 7246), --Samurai
+    CFrame.new(-319, -87, 420) --Spider
+}
+
+local function attemptRespawn()
+    local rs = game:GetService("ReplicatedStorage")
+    if not rs then return end
+    
+    local remoteInterface = rs:FindFirstChild("remoteInterface")
+    if not remoteInterface then return end
+    
+    local characterFolder = remoteInterface:FindFirstChild("character")
+    if not characterFolder then return end
+    
+    local resetRemote = characterFolder:FindFirstChild("reset")
+    if resetRemote then
+        resetRemote:InvokeServer()
+    end
+    
+    local respawnRemote = characterFolder:FindFirstChild("respawn")
+    if respawnRemote then
+        respawnRemote:InvokeServer(unpack(respawnArgs))
+    end
+end
+
+local function teleport(cframe)
+    isTeleporting = true
+    attemptRespawn()
+    
+    task.wait(0.2)
+    
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    
+    for i = 1, 3 do
+        if character and humanoidRootPart then
+            humanoidRootPart.CFrame = cframe
+            task.wait(0.2)
+        end
+    end
+
+    isTeleporting = false
+end
+
+
+
+                local teleportSection = Tabs.Tab5
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Desert",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[1])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Desert Middle",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[2])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Desert Temple",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[3])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Desert Hill",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[4])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Desert Maze",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[5])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Main Land",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[6])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Near Mainland",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[7])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Stone Land",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[8])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Middle Iron Mine",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[9])
+                        end
+                    }
+                )
+
+                local Section = Tabs.Tab5:AddSection("Jungle")
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Jungle",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[10])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Jungle Temple",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[11])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Arctic",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[12])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Arctic Mountain",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[13])
+                        end
+                    }
+                )
+
+                local Section = Tabs.Tab5:AddSection("Boss")
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Kraken",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[14])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Volcano",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[15])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Titan",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[16])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Samurai",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[17])
+                        end
+                    }
+                )
+
+                teleportSection:AddButton(
+                    {
+                        Title = "Spider",
+                        Description = "",
+                        Callback = function()
+                            teleport(cframes[18])
+                        end
+                    }
+                )
+
+                SaveManager:SetLibrary(Fluent)
+                InterfaceManager:SetLibrary(Fluent)
+
+                SaveManager:IgnoreThemeSettings()
+
+                SaveManager:SetIgnoreIndexes({})
+
+                InterfaceManager:SetFolder("FluentScriptHub")
+                SaveManager:SetFolder("FluentScriptHub/specific-game")
+
+                InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+                SaveManager:BuildConfigSection(Tabs.Settings)
+
+                Window:SelectTab(1)
+
+                Fluent:Notify(
+                    {
+                        Title = "NexusZ ",
+                        Content = "The script has  loaded.",
+                        Duration = 8
+                    }
+                )
+
+                SaveManager:LoadAutoloadConfig()
+
+                local screenGui = Instance.new("ScreenGui")
+                screenGui.Parent = game.CoreGui
+
+                local minimizeButton = Instance.new("ImageButton")
+                minimizeButton.Size = UDim2.new(0, 50, 0, 50)
+                minimizeButton.Position = UDim2.new(0, 10, 1, -80)
+                minimizeButton.BackgroundColor3 = Color3.fromRGB(85, 170, 255)
+                minimizeButton.Image = "rbxassetid://14252684484"
+                minimizeButton.Parent = screenGui
+
+                local uiCorner = Instance.new("UICorner")
+                uiCorner.CornerRadius = UDim.new(1, 0)
+                uiCorner.Parent = minimizeButton
+
+                minimizeButton.MouseButton1Click:Connect(
+                    function()
+                        Window:Minimize()
+                    end
+                )
+
+                local restoreButton = Instance.new("ImageButton")
+                restoreButton.Size = UDim2.new(0, 50, 0, 50)
+                restoreButton.Position = UDim2.new(0, 10, 1, -80)
+                restoreButton.BackgroundColor3 = Color3.fromRGB(85, 170, 255)
+                restoreButton.Image = "rbxassetid://14252684484"
+                restoreButton.Visible = false
+                restoreButton.Parent = screenGui
+
+                restoreButton.MouseButton1Click:Connect(
+                    function()
+                        Window:Restore()
+                    end
+                )
+
+                Window.Minimized:Connect(
+                    function(isMinimized)
+                        minimizeButton.Visible = not isMinimized
+                        restoreButton.Visible = isMinimized
+                    end
+                )
